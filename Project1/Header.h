@@ -15,3 +15,6 @@ typedef struct Array {
 	int size;
 	anketa* Peoples;
 }Array;
+
+void GetData(Array*);
+void Search(Array*, char*);
