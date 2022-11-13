@@ -3,9 +3,10 @@ INT WINAPI WinMain(HINSTANCE histance, HINSTANCE hPrevInstance, LPSTR lpCMDline,
 {
 	Array array;
 	GetData(&array);
-	Search(&array, "Десятков");
-	int s = array.size;
-	return s;
+	//Search(&array, "Оскорбина");
+	//WriteData(&array, L"newdata.csv");
+	double avg = AVGAge(&array);
+	return avg;
 }
 
 void GetData(Array* array) {
@@ -20,21 +21,42 @@ void GetData(Array* array) {
 	ReadFile(file, text, size, &bytes, NULL);
 	CloseHandle(file);
 	size = 0;
+	int index = 0;
 	for (size_t i = 0; i < bytes; i++)
 	{
 		if ((text[i] == '\n') || (i == bytes - 1)) {
 			size++;
 		}
 	}
-	
-	anketa* peoples = calloc(size, sizeof(anketa));
 	char** lines = calloc(size, sizeof(char*));
+	for (size_t i = 0; i < bytes; i++)
+	{
+		if ((text[i+1] == '\r') || (i == bytes - 1)) {
+			if (index == 0) {
+				lines[index] = malloc(i);
+			}
+			else {
+				int last_size = 0;
+				for (size_t j = 0; j < index; j++)
+				{
+					int s = 0;
+					while (lines[j][s] == -51)
+					{
+						last_size++;
+						s++;
+					}
+				}
+				int count = i - last_size -(2*index);
+				lines[index] = malloc(count);
+			}
+			i += 2;
+			index++;
+		}
+	}
+
+	anketa* peoples = calloc(size, sizeof(anketa));
 	int line = 0;
 	int charindex = 0;
-	for (size_t i = 0; i < size; i++)
-	{
-		lines[i] = malloc(200);
-	}
 	for (size_t i = 0; i < bytes; i++)
 	{
 		lines[line][charindex] = text[i];
@@ -53,7 +75,7 @@ void GetData(Array* array) {
 		peoples[i].Name = buf;
 		buf = strtok(NULL, ";");
 		peoples[i].SecondName = buf;
-		buf = strtok(NULL, ";");
+		buf = strtok(NULL, ";э");
 		peoples[i].Age = buf;
 		
 	}
@@ -63,15 +85,20 @@ void GetData(Array* array) {
 
 void Search(Array* array,char* needed) {
 	int newSize = 1;
-	char* ans;
-	anketa* peoples = calloc(newSize, sizeof(anketa));
+	anketa* peoples ={0};
 	for (size_t i = 0; i <= array->size; i++)
 	{
-		ans = strstr(array->Peoples[i].Surname, needed);
 		if (strstr(array->Peoples[i].Surname, needed) != NULL) {
+			if (newSize == 1) {
+				peoples = calloc(newSize, sizeof(anketa));
+			}
+			else
+			{
+				peoples = (anketa*)realloc(peoples, newSize);
+			}
 			newSize++;
-			peoples = (anketa*)realloc(peoples, newSize);
 			peoples[newSize-2] = array->Peoples[i];
+			break;
 		}
 	}
 	array->size = newSize-1;
@@ -81,6 +108,26 @@ void WriteData(Array* array, char* filename) {
 	HANDLE file = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	for (size_t i = 0; i < array->size; i++)
 	{
-		WriteFile(file,)
+		char text[50] = "";
+		strncat(text,array->Peoples[i].Surname, strlen(array->Peoples[i].Surname));
+		strncat(text, ";",1);
+		strncat(text, array->Peoples[i].Name, strlen(array->Peoples[i].Name));
+		strncat(text, ";",1);
+		strncat(text, array->Peoples[i].SecondName, strlen(array->Peoples[i].SecondName));
+		strncat(text, ";",1);
+		strncat(text, array->Peoples[i].Age, strlen(array->Peoples[i].Age));
+		strncat(text, "\n",1);
+		int size = strlen(text);
+		WriteFile(file,text,size, NULL, NULL);
 	}
+}
+
+double AVGAge(Array* array) {
+	int all_age = 0;
+	for (size_t i = 0; i < array->size; i++)
+	{
+		all_age += atoi(array->Peoples[i].Age);
+	}
+	double avg = all_age / array->size;
+	return avg;
 }

@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <stdlib.h>
 
 typedef struct ANKETA {
 	char* Name;
@@ -18,3 +18,5 @@ typedef struct Array {
 
 void GetData(Array*);
 void Search(Array*, char*);
+void WriteData(Array*, char*);
+double AVGAge(Array*);
