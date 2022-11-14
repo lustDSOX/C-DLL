@@ -33,7 +33,6 @@ BOOL WINAPI DllMain(
 	return TRUE;  // Successful DLL_PROCESS_ATTACH.
 }
 
-extern __declspec(dllimport) void GetData(Array * array);
 
 void GetData(Array* array) {
 	FILE* pFile = fopen("Users.csv", "r");
@@ -112,9 +111,21 @@ void GetData(Array* array) {
 void Search(Array* array,char* needed) {
 	int newSize = 1;
 	anketa* peoples ={0};
+	char* head = &needed;
 	for (size_t i = 0; i <= array->size; i++)
 	{
-		if (strstr(array->Peoples[i].Surname, needed) != NULL) {
+		int s = 0;
+		int bool = 1;
+		while (needed) {
+			if (needed != array->Peoples[i].Surname[s]) {
+				bool = 0;
+				break;
+			}
+			needed++;
+			s++;
+		}
+		needed = head;
+		if (bool == 1) {
 			if (newSize == 1) {
 				peoples = calloc(newSize, sizeof(anketa));
 			}
@@ -149,7 +160,7 @@ void WriteData(Array* array, char* filename) {
 }
 
 double AVGAge(Array* array) {
-	int all_age = 0;
+	double all_age = 0;
 	for (size_t i = 0; i < array->size; i++)
 	{
 		all_age += atoi(array->Peoples[i].Age);

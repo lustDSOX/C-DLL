@@ -12,10 +12,11 @@ typedef struct ANKETA {
 	char* Age;
 } anketa;
 typedef struct Array {
-	int size;
+	double size;
 	anketa* Peoples;
 }Array;
 
-void Search(Array*, char*);
-void WriteData(Array*, char*);
-double AVGAge(Array*);
+extern __declspec(dllimport) void GetData(Array* array);
+extern __declspec(dllimport) void Search(Array* array, char*);
+extern __declspec(dllimport) void WriteData(Array* array, char*);
+extern __declspec(dllimport) double AVGAge(Array* array);

@@ -3,10 +3,15 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR LpCmdLIne, int nCmdShow) {
 	HINSTANCE dll = LoadLibrary(L"DLL.dll");
-	GetData getData = (GetData)GetProcAddress(dll, "GetData");
+	GetData Get = (GetData)GetProcAddress(dll, "GetData");
+	AVGAge AVG = (AVGAge)GetProcAddress(dll, "AVGAge");
+	WriteData Write = (WriteData)GetProcAddress(dll, "WriteData");
+	Search search = (Search)GetProcAddress(dll, "Search");
 	Array array;
-	getData(&array);
-	int s = array.size;
+	Get(&array);
+	double s = AVG(&array);
+	search(&array, "ôûâ");
+	Write(&array, L"newdata.csv");
 	FreeLibrary(dll);
 	return 0;
 }
