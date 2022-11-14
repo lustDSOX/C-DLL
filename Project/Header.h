@@ -15,7 +15,4 @@ typedef struct Array {
 	int size;
 	anketa* Peoples;
 }Array;
-
-void Search(Array*, char*);
-void WriteData(Array*, char*);
-double AVGAge(Array*);
+typedef void(_cdecl* GetData)(Array*);
