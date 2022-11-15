@@ -56,7 +56,7 @@ void GetData(Array* array) {
 	char** lines = calloc(size, sizeof(char*));
 	for (size_t i = 0; i < bytes; i++)
 	{
-		if ((text[i+1] == '\r') || (i == bytes - 1)) {
+		if ((text[i + 1] == '\r') || (i == bytes - 1)) {
 			if (index == 0) {
 				lines[index] = malloc(i);
 			}
@@ -71,7 +71,7 @@ void GetData(Array* array) {
 						s++;
 					}
 				}
-				int count = i - last_size -(2*index);
+				int count = i - last_size - (2 * index);
 				lines[index] = malloc(count);
 			}
 			i += 2;
@@ -94,30 +94,32 @@ void GetData(Array* array) {
 	}
 	for (size_t i = 0; i < size; i++)
 	{
-		char* buf=strtok(lines[i], ";");
+		char* buf = strtok(lines[i], ";");
 		peoples[i].Surname = buf;
-		buf= strtok(NULL, ";");
+		buf = strtok(NULL, ";");
 		peoples[i].Name = buf;
 		buf = strtok(NULL, ";");
 		peoples[i].SecondName = buf;
 		buf = strtok(NULL, ";ý");
 		peoples[i].Age = buf;
-		
+
 	}
 	array->size = size;
 	array->Peoples = peoples;
 }
 
-void Search(Array* array,char* needed) {
+void Search(Array* array, char* needed) {
 	int newSize = 1;
-	anketa* peoples ={0};
-	char* head = &needed;
+	anketa* peoples = { 0 };
+	char* head = needed;
 	for (size_t i = 0; i <= array->size; i++)
 	{
 		int s = 0;
 		int bool = 1;
-		while (needed) {
-			if (needed != array->Peoples[i].Surname[s]) {
+		while (*needed != '\0') {
+			char word = array->Peoples[i].Surname[s];
+			char n = *needed;
+			if (*needed != array->Peoples[i].Surname[s]) {
 				bool = 0;
 				break;
 			}
@@ -131,14 +133,13 @@ void Search(Array* array,char* needed) {
 			}
 			else
 			{
-				peoples = (anketa*)realloc(peoples, newSize);
+				peoples = (anketa*)realloc(peoples, newSize*sizeof(anketa));
 			}
 			newSize++;
-			peoples[newSize-2] = array->Peoples[i];
-			break;
+			peoples[newSize - 2] = array->Peoples[i];
 		}
 	}
-	array->size = newSize-1;
+	array->size = newSize - 1;
 	array->Peoples = peoples;
 }
 void WriteData(Array* array, char* filename) {
@@ -146,16 +147,16 @@ void WriteData(Array* array, char* filename) {
 	for (size_t i = 0; i < array->size; i++)
 	{
 		char text[50] = "";
-		strncat(text,array->Peoples[i].Surname, strlen(array->Peoples[i].Surname));
-		strncat(text, ";",1);
+		strncat(text, array->Peoples[i].Surname, strlen(array->Peoples[i].Surname));
+		strncat(text, ";", 1);
 		strncat(text, array->Peoples[i].Name, strlen(array->Peoples[i].Name));
-		strncat(text, ";",1);
+		strncat(text, ";", 1);
 		strncat(text, array->Peoples[i].SecondName, strlen(array->Peoples[i].SecondName));
-		strncat(text, ";",1);
+		strncat(text, ";", 1);
 		strncat(text, array->Peoples[i].Age, strlen(array->Peoples[i].Age));
-		strncat(text, "\n",1);
+		strncat(text, "\n", 1);
 		int size = strlen(text);
-		WriteFile(file,text,size, NULL, NULL);
+		WriteFile(file, text, size, NULL, NULL);
 	}
 }
 

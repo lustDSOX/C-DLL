@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR LpCmdLIne
 	Array array;
 	Get(&array);
 	double s = AVG(&array);
-	search(&array, "фыв");
+	search(&array, "Десятков");
 	Write(&array, L"newdata.csv");
 	FreeLibrary(dll);
 	return 0;
